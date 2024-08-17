@@ -1,0 +1,23 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление книгами</title>
+</head>
+<body>
+    <h1>Управление книгами</h1>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Добавить книгу</button>
+    </form>
+
+    <h2>Список книг</h2>
+    <ul>
+        {% for book in books %}
+            <li>
+                <a href="{% url 'edit_book' book.id %}">Редактировать</a> - <strong>{{ book.title }}</strong>доступно)
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

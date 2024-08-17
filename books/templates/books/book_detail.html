@@ -1,0 +1,143 @@
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f9f9f9;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .book-detail {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .book-detail img {
+            max-width: 300px;
+            margin-bottom: 15px;
+        }
+        .book-info {
+            margin: 10px 0;
+        }
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .quantity-control button {
+            padding: 5px 10px;
+            background: #27ae60;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .quantity-control button:hover {
+            background: #219653;
+        }
+        .quantity-display {
+            margin: 0 10px;
+        }
+        .cart-actions {
+            margin-top: 20px;
+        }
+        .cart-feedback {
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>{{ book.title }}</h1>
+        <div class="book-detail">
+            {% if book.cover_image %}
+                <img src="{{ book.cover_image.url }}" alt="Обложка книги">
+            {% endif %}
+            <div class="book-info">
+                <p><strong>Автор:</strong> {{ book.author }}</p>
+                <p><strong>Год издания:</strong> {{ book.publication_year }}</p>
+                <p><strong>Категория:</strong> {{ book.category.name }}</p>
+                <p><strong>Описание:</strong> {{ book.description }}</p>
+                <p><strong>Цена:</strong> {{ book.price }} ₽</p>
+            </div>
+        </div>
+        <div class="quantity-control">
+            <form id="add-to-cart-form" method="post" action="{% url 'add_to_cart' book.id %}">
+                {% csrf_token %}
+                <button type="submit">Добавить в корзину</button>
+            </form>
+            <form id="remove-from-cart-form" method="post" action="{% url 'remove_from_cart' book.id %}">
+                {% csrf_token %}
+                <button type="submit">Убрать из корзины</button>
+            </form>
+        </div>
+        <div class="cart-actions">
+            <a href="{% url 'cart' %}" class="cart-action-button">Перейти в корзину</a>
+            <a href="{% url 'book_list' %}" class="cart-action-button">На главную</a>
+        </div>
+        <div id="cart-feedback" class="cart-feedback"></div>
+
+        <script>
+            // Функция для обработки добавления в корзину
+            document.getElementById('add-to-cart-form').onsubmit = function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('cart-feedback').innerText =
+                        'Книга добавлена, количество: ' + data.quantity;
+                    document.getElementById('cart-feedback').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                });
+            };
+            document.getElementById('remove-from-cart-form').onsubmit = function(event) {
+                event.preventDefault();
+                const formData = new FormData(this);
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('cart-feedback').innerText =
+                        'Книга убрана из корзины, количество: ' + data.quantity;
+                    document.getElementById('cart-feedback').style.display = 'block';
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error);
+                });
+            };
+        </script>
+    </div>
+</body>
+</html>

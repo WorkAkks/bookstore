@@ -3,6 +3,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Книжный магазин</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        a {
+            text-decoration: none;
+            color: #2980b9;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        .admin-button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #27ae60;
+            color: white;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .admin-button:hover {
+            background-color: #219653;
+        }
+    </style>
 </head>
 <body>
     <h1>Книжный магазин</h1>
@@ -10,6 +37,11 @@
     {% if user.is_authenticated %}
         <p>Привет, {{ user.username }}! <a href="{% url 'logout' %}">Выйти</a></p>
         <p><a href="{% url 'cart' %}">Корзина</a></p>
+        {% if user.is_staff %}
+            <a href="/admin/" class="admin-button">Перейти в администраторскую панель</a>
+    </br>
+    </br>
+        {% endif %}
     {% else %}
         <p>
             <a href="{% url 'login' %}">Войти</a> |

@@ -1,14 +1,38 @@
-<head>
-    <title>Корзина</title>
-</head>
-<body>
-    <h1>Корзина</h1>
+<h1>Корзина</h1>
+<form method="post">
+    {% csrf_token %}
     <ul>
-        {% for item, item_price in order_items %}
-            <li>{{ item.quantity }} x {{ item.book.title }} - {{ item_price }}</li>
+        {% for item in item_details %}
+            <li>
+                {{ item.title }} <br />
+                <select name="rental_period_{{ item.order_item_id }}">
+                    <option value="покупка" {% if item.item_type == 'покупка' %}selected{% endif %}>Покупка</option>
+                    <option value="2 недели" {% if item.rental_period == '2 недели' %}selected{% endif %}>Аренда на 2 недели</option>
+                    <option value="месяц" {% if item.rental_period == 'месяц' %}selected{% endif %}>Аренда на месяц</option>
+                    <option value="3 месяца" {% if item.rental_period == '3 месяца' %}selected{% endif %}>Аренда на 3 месяца</option>
+                </select>
+                - Сумма: {{ item.item_total|floatformat:2 }} р.
+            </li>
         {% endfor %}
     </ul>
-    <p>Итого: {{ total_price }}</p>
-    <a href="{% url 'checkout' %}">Оформить заказ</a>
-</body>
-</html>
+    <p>Общая сумма: {{ total_price|floatformat:2 }} р.</p>
+    <button type="submit">Обновить корзину</button>
+</form>
+
+<hr>
+<h2>Итоговая сумма</h2>
+<p>Итого по покупке: {{ total_purchase|floatformat:2 }} р.</p>
+<p>Итого по аренде: {{ total_rental|floatformat:2 }} р.</p>
+<p>Общая сумма: {{ total_price|floatformat:2 }} р.</p>
+
+<a id="checkout-button" href="{% url 'checkout' %}">Оформить заказ</a>
+<script>
+    document.getElementById('checkout-button').onclick = function(event) {
+        event.preventDefault();
+        alert('Заказ оформлен!');
+        setTimeout(function() {
+            window.location.href = "{% url 'book_list' %}";
+        }, 1000);
+    };
+    </script>
+<a href="{% url 'book_list' %}" class="home-button">Домой</a>
