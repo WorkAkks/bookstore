@@ -1,0 +1,14 @@
+<head>
+    <title>Корзина</title>
+</head>
+<body>
+    <h1>Корзина</h1>
+    <ul>
+        {% for item, item_price in order_items %}
+            <li>{{ item.quantity }} x {{ item.book.title }} - {{ item_price }}</li>
+        {% endfor %}
+    </ul>
+    <p>Итого: {{ total_price }}</p>
+    <a href="{% url 'checkout' %}">Оформить заказ</a>
+</body>
+</html>
