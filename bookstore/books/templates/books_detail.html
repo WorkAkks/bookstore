@@ -1,0 +1,18 @@
+ <head>
+     <title>{{ book.title }}</title>
+ </head>
+ <body>
+     <h1>{{ book.title }}</h1>
+     <p>Автор: {{ book.author }}</p>
+     <p>Год: {{ book.publication_year }}</p>
+     <p>Категория: {{ book.category.name }}</p>
+     <p>{{ book.description }}</p>
+     {% if book.cover_image %}
+         <img src="{{ book.cover_image.url }}" alt="Обложка книги">
+     {% endif %}
+     <p>Цена: {{ book.price }}</p>
+     {% if user.is_authenticated %}
+         <a href="{% url 'add_to_cart' book.id %}">Добавить в корзину</a>
+     {% endif %}
+ </body>
+ </html>
